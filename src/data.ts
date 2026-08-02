@@ -3,7 +3,6 @@ export interface ScriptDef {
   title: string;
   heading: string;
   description: string;
-  tags: { label: string; cls: string }[];
   changelogKey?: string;
   images?: string[];
 }
@@ -22,11 +21,6 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'eclipse hub - adopt me autofarm',
     description:
       "This script for Adopt Me will automatically farm for you, collecting cash and helping you get your dream pets faster than ever before. It's safe, efficient, and easy to use.",
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     changelogKey: 'autofarm',
     images: [
       'scripts/eclipse-autofarm-1.jpg',
@@ -36,14 +30,9 @@ export const SCRIPTS: ScriptDef[] = [
   },
   {
     id: 'pet-spawner-visual',
-    title: 'Adopt Me - Pet Spawner {FIXED, VISUAL ONLY}',
+    title: 'Adopt Me - Pet Spawner (Visual)',
     heading: 'adopt me - pet spawner',
     description: 'Spawn and customise pets visually – no serverside.',
-    tags: [
-      { label: '🔧 FIXED', cls: 'fixed' },
-      { label: '👀 VISUAL ONLY', cls: 'visual' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     changelogKey: 'pet-spawner',
     images: [
       'scripts/yt-pet-spawner-halloween.jpg',
@@ -56,13 +45,8 @@ export const SCRIPTS: ScriptDef[] = [
     title: 'Adopt Me - Trade Value Checker',
     heading: 'adopt me - trade value checker',
     description: 'Check trade values instantly to avoid bad trades.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
-      'scripts/yt-wfl-trade.jpg',
+      'scripts/yt-trade-scam.jpg',
       'scripts/yt-trade-scam-new.jpg',
       'scripts/trade-checker-1.jpg',
     ],
@@ -72,11 +56,6 @@ export const SCRIPTS: ScriptDef[] = [
     title: 'Adopt Me - Trade Bypass',
     heading: 'adopt me - trade bypass',
     description: 'Bypass trade restrictions effortlessly.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
       'scripts/yt-trade-scam.jpg',
       'scripts/trade-bypass-1.jpg',
@@ -87,13 +66,8 @@ export const SCRIPTS: ScriptDef[] = [
     title: 'Adopt Me - Food Money Exploit',
     heading: 'adopt me - food money exploit',
     description: 'Exploit food mechanics to earn cash quickly.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
-      'scripts/yt-money-farm.jpg',
+      'scripts/yt-adoptme-event.jpg',
       'scripts/food-money-1.jpg',
     ],
   },
@@ -103,12 +77,6 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'adopt me fps boost & unlock, better graphics, shaders',
     description:
       'Boost your FPS, unlock better graphics and add beautiful shaders to enhance your Adopt Me gaming experience.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '💎 PREMIUM', cls: 'premium' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
       'scripts/yt-fps-unlock.jpg',
       'scripts/yt-fps-unlock2.jpg',
@@ -120,11 +88,6 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'adopt me axonic keyless hub',
     description:
       'Axonic Keyless Hub for Adopt Me — auto-farm, keyless pet collection, and smart task automation in one clean interface.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
       'scripts/yt-atherhub.jpg',
       'scripts/yt-keyless-script.jpg',
@@ -137,13 +100,8 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'adopt me snowy hub autofarm',
     description:
       'Snowy Hub delivers full auto-farm for Adopt Me — pet collection, cash farming, and daily tasks automated.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
-      'scripts/yt-snow-hub.jpg',
+      'scripts/yt-eclipse-showcase.jpg',
       'scripts/snowy-1.jpg',
       'scripts/snowy-2.jpg',
     ],
@@ -154,11 +112,6 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'adopt me forge hub full tasks',
     description:
       'Forge Hub covers every Adopt Me task — auto-farm, pet collection, obby completion, and more in a single script.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
       'scripts/yt-adoptme-event.jpg',
       'scripts/forge-1.jpg',
@@ -171,14 +124,8 @@ export const SCRIPTS: ScriptDef[] = [
     heading: 'adopt me dp hub house clone',
     description:
       'DP Hub clones the Adopt Me house system — auto-feed, auto-farm, and pet management all in one.',
-    tags: [
-      { label: '✅ UPDATED', cls: 'updated' },
-      { label: '⚡ WORKING', cls: 'working' },
-      { label: '👑 VERIFIED', cls: 'verified' },
-    ],
     images: [
-      'scripts/yt-house-cloner.jpg',
-      'scripts/yt-house-clone.jpg',
+      'scripts/yt-pet-spawner-halloween.jpg',
       'scripts/dp-hub-1.jpg',
     ],
   },

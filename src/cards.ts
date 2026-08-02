@@ -209,19 +209,14 @@ function openDetailModal(script: ScriptDef): void {
 
 export function renderCards(): void {
   const container = document.getElementById('scripts-container') as HTMLElement;
-  const updatedTitle = `Updated on: ${new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })}`;
 
   SCRIPTS.forEach((script, i) => {
     const card = document.createElement('article');
     card.className = 'script-card';
     card.style.setProperty('--card-i', String(i));
     card.dataset.scriptId = script.id;
-    // Searchable haystack: heading + description + tag labels
-    card.dataset.search = `${script.heading} ${script.description} ${script.tags.map((t) => t.label).join(' ')}`.toLowerCase();
+    // Searchable haystack: heading + description (card badge tags removed)
+    card.dataset.search = `${script.heading} ${script.description}`.toLowerCase();
 
     const h2 = document.createElement('h2');
     h2.textContent = script.heading;
@@ -250,16 +245,6 @@ export function renderCards(): void {
 
     const meta = document.createElement('div');
     meta.className = 'script-meta';
-    const tags = document.createElement('div');
-    tags.className = 'status-tags';
-    for (const t of script.tags) {
-      const tag = document.createElement('span');
-      tag.className = `tag ${t.cls}`;
-      tag.textContent = t.label;
-      if (t.cls === 'updated') tag.title = updatedTitle;
-      tags.appendChild(tag);
-    }
-    meta.appendChild(tags);
 
     const pre = document.createElement('pre');
     pre.textContent = 'Click "Copy Script" to get the code';

@@ -476,32 +476,6 @@ main {
 }
 
 .script-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 18px; }
-.status-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-.tag {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  transition: transform 0.25s var(--ease-snap), box-shadow 0.25s ease;
-}
-.tag:hover { transform: translateZ(0) translateY(-2px) scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
-.tag.updated  { background: rgba(45, 212, 191, 0.14); border-color: rgba(45, 212, 191, 0.4); color: #2dd4bf; cursor: help; }
-.tag.working  { background: rgba(45, 226, 230, 0.12); border-color: rgba(45, 226, 230, 0.4); color: var(--teal); }
-.tag.verified { background: rgba(255, 211, 25, 0.12); border-color: rgba(255, 211, 25, 0.4); color: var(--amber); }
-.tag.fixed    { background: rgba(34, 197, 94, 0.14); border-color: rgba(34, 197, 94, 0.4); color: #22c55e; }
-.tag.visual   { background: rgba(59, 130, 246, 0.14); border-color: rgba(59, 130, 246, 0.4); color: #3b82f6; }
-.tag.premium  {
-  background: rgba(246, 1, 157, 0.14);
-  border-color: rgba(246, 1, 157, 0.4);
-  color: var(--magenta);
-  animation: premium-glow 2s ease-in-out infinite alternate;
-}
-@keyframes premium-glow {
-  from { box-shadow: 0 0 10px rgba(246, 1, 157, 0.3); }
-  to   { box-shadow: 0 0 20px rgba(246, 1, 157, 0.65); }
-}
 
 .script-card pre {
   font-family: var(--font-term);
@@ -1139,7 +1113,6 @@ html { scrollbar-width: thin; scrollbar-color: var(--teal) #0c0d1b; }
   .x-path,
   #logo-bottle,
   .bottle::before,
-  .tag.premium,
   .placard {
     animation: none;
   }
