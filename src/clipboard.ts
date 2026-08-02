@@ -15,6 +15,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   ta.focus();
   ta.select();
   try {
+    // Intentional legacy fallback: execCommand is deprecated but still works in
+    // WebViews (older Android/iOS in-app browsers) where the Clipboard API is
+    // unavailable or blocked — see commit cd5c7cb. Do not remove without
+    // verifying the "clipboard denied" recovery flow still works.
     const ok = document.execCommand('copy');
     ta.remove();
     return ok;
