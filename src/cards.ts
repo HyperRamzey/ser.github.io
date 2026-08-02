@@ -1,10 +1,30 @@
 import { SCRIPTS, generateRandomLoadstring, getChangelog, type ScriptDef } from './data';
 import { copyToClipboard } from './clipboard';
 
-const COPY_ICON =
-  '<svg class="animated-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
-const HISTORY_ICON =
-  '<svg class="animated-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>';
+const COPY_ICON_PATH =
+  'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z';
+const HISTORY_ICON_PATH =
+  'M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z';
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/** Build an <svg><path></svg> icon node (no innerHTML — avoids the XSS lint). */
+function makeIcon(pathData: string): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', 'animated-icon');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'currentColor');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', pathData);
+  svg.appendChild(path);
+  return svg;
+}
+
+/** Replace a button's content with an icon + text label. */
+function setButtonLabel(btn: HTMLButtonElement, pathData: string, label: string): void {
+  btn.replaceChildren(makeIcon(pathData), document.createTextNode(` ${label}`));
+}
 
 const EMOJIS = ['❤️', '💖', '💗', '💓', '💕', '💞'];
 
@@ -47,10 +67,14 @@ export function hideModal(modal: HTMLElement): void {
 
 /** Keep ?s=<script-id> in sync with the open detail modal. */
 function setScriptParam(id: string | null): void {
-  const url = new URL(window.location.href);
-  if (id) url.searchParams.set('s', id);
-  else url.searchParams.delete('s');
-  window.history.replaceState(null, '', url);
+  try {
+    const url = new URL(window.location.href);
+    if (id) url.searchParams.set('s', id);
+    else url.searchParams.delete('s');
+    window.history.replaceState(null, '', url);
+  } catch {
+    // URL construction or history rejection — non-fatal; modal still works.
+  }
 }
 
 function openPreviewModal(scriptText: string, copied: boolean): void {
@@ -69,7 +93,7 @@ async function runCopyFlow(btn: HTMLButtonElement, pre: HTMLPreElement): Promise
   if (btn.dataset.loading === '1') return;
   if (btn.classList.contains('copied')) {
     btn.classList.remove('copied');
-    btn.innerHTML = `${COPY_ICON} Copy Script`;
+    setButtonLabel(btn, COPY_ICON_PATH, 'Copy Script');
     return;
   }
   btn.dataset.loading = '1';
@@ -79,18 +103,27 @@ async function runCopyFlow(btn: HTMLButtonElement, pre: HTMLPreElement): Promise
 
   const loader = document.createElement('div');
   loader.className = 'loader-container';
-  loader.innerHTML =
-    '<div class="loader-bar"></div><div class="loader-text"><span>Generating Script for you</span><span class="emoji">❤️</span></div>';
+  const bar = document.createElement('div');
+  bar.className = 'loader-bar';
+  const text = document.createElement('div');
+  text.className = 'loader-text';
+  const labelSpan = document.createElement('span');
+  labelSpan.textContent = 'Generating Script for you';
+  const emojiSpan = document.createElement('span');
+  emojiSpan.className = 'emoji';
+  emojiSpan.textContent = '❤️';
+  text.appendChild(labelSpan);
+  text.appendChild(emojiSpan);
+  loader.appendChild(bar);
+  loader.appendChild(text);
   pre.appendChild(loader);
 
   const duration = Math.floor(Math.random() * 3000) + 2000;
-  const bar = loader.querySelector<HTMLElement>('.loader-bar');
-  if (bar) bar.style.animationDuration = `${duration / 1000}s`;
+  bar.style.animationDuration = `${duration / 1000}s`;
 
-  const emojiSpan = loader.querySelector<HTMLElement>('.emoji');
   let emojiIdx = 0;
   const emojiTimer = window.setInterval(() => {
-    if (emojiSpan) emojiSpan.textContent = EMOJIS[(emojiIdx = (emojiIdx + 1) % EMOJIS.length)];
+    emojiSpan.textContent = EMOJIS[(emojiIdx = (emojiIdx + 1) % EMOJIS.length)];
   }, 300);
 
   await new Promise((r) => window.setTimeout(r, duration));
@@ -101,8 +134,8 @@ async function runCopyFlow(btn: HTMLButtonElement, pre: HTMLPreElement): Promise
   const ok = await copyToClipboard(scriptText);
   openPreviewModal(scriptText, ok);
   if (ok) {
-    btn.innerHTML = '✓ Copied!';
     btn.classList.add('copied');
+    setButtonLabel(btn, COPY_ICON_PATH, '✓ Copied!');
   }
   delete btn.dataset.loading;
 }
@@ -148,45 +181,53 @@ function openDetailModal(script: ScriptDef): void {
   // leaving the site. Deep-link landings already have ?s= in the URL — no
   // push there, so Back still exits to wherever the visitor came from.
   if (new URLSearchParams(window.location.search).get('s') !== script.id) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('s', script.id);
-    window.history.pushState({ s: script.id }, '', url);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('s', script.id);
+      window.history.pushState({ s: script.id }, '', url);
+    } catch {
+      // URL construction or pushState rejection — non-fatal
+    }
   }
-  copyBtn.innerHTML = '💪 Copy Script';
+  setButtonLabel(copyBtn, COPY_ICON_PATH, '💪 Copy Script');
   const shareBtn = document.getElementById('modal-share-btn') as HTMLButtonElement;
-  shareBtn.innerHTML = '🔗 Share';
+  shareBtn.textContent = '🔗 Share';
   copyBtn.onclick = async () => {
     const text = generateRandomLoadstring();
     const ok = await copyToClipboard(text);
     if (ok) {
-      copyBtn.innerHTML = '✅ Copied!';
+      setButtonLabel(copyBtn, COPY_ICON_PATH, '✅ Copied!');
     } else {
       // Clipboard blocked — still surface the script link so the user can copy manually.
       openPreviewModal(text, false);
     }
   };
   shareBtn.onclick = async () => {
-    const url = new URL(window.location.href);
-    url.search = `?s=${script.id}`;
-    const link = url.toString();
-    // Native share sheet where available (mobile); clipboard elsewhere.
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: script.title, url: link });
-        return;
-      } catch {
-        /* user cancelled — fall through to clipboard */
+    try {
+      const url = new URL(window.location.href);
+      url.search = `?s=${script.id}`;
+      const link = url.toString();
+      // Native share sheet where available (mobile); clipboard elsewhere.
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: script.title, url: link });
+          return;
+        } catch {
+          /* user cancelled — fall through to clipboard */
+        }
       }
-    }
-    if (await copyToClipboard(link)) {
-      shareBtn.innerHTML = '✅ Link copied!';
-      window.setTimeout(() => {
-        shareBtn.innerHTML = '🔗 Share';
-      }, 2000);
+      if (await copyToClipboard(link)) {
+        shareBtn.textContent = '✅ Link copied!';
+        window.setTimeout(() => {
+          shareBtn.textContent = '🔗 Share';
+        }, 2000);
+      }
+    } catch {
+      // URL or share failure — non-fatal
     }
   };
   // Populate gallery dynamically
-  gallery.innerHTML = '';
+  gallery.replaceChildren();
   if (script.images?.length) {
     for (const src of script.images) {
       const btn = document.createElement('button');
@@ -254,7 +295,7 @@ export function renderCards(): void {
     const copyBtn = document.createElement('button');
     copyBtn.type = 'button';
     copyBtn.className = 'btn copy-btn';
-    copyBtn.innerHTML = `${COPY_ICON} Copy Script`;
+    setButtonLabel(copyBtn, COPY_ICON_PATH, 'Copy Script');
     copyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       void runCopyFlow(copyBtn, pre);
@@ -263,7 +304,7 @@ export function renderCards(): void {
     const historyBtn = document.createElement('button');
     historyBtn.type = 'button';
     historyBtn.className = 'btn secondary-btn';
-    historyBtn.innerHTML = `${HISTORY_ICON} Version History`;
+    setButtonLabel(historyBtn, HISTORY_ICON_PATH, 'Version History');
     historyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       openChangelog(script);
@@ -376,10 +417,14 @@ let syncTimer = 0;
 function syncQueryParam(term: string): void {
   window.clearTimeout(syncTimer);
   syncTimer = window.setTimeout(() => {
-    const url = new URL(window.location.href);
-    const q = term.trim();
-    if (q) url.searchParams.set('q', q);
-    else url.searchParams.delete('q');
-    window.history.replaceState(null, '', url);
+    try {
+      const url = new URL(window.location.href);
+      const q = term.trim();
+      if (q) url.searchParams.set('q', q);
+      else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
+    } catch {
+      // Non-fatal — search still works without ?q= sync.
+    }
   }, 400);
 }
